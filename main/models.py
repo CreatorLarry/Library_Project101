@@ -42,9 +42,9 @@ class Book(models.Model):
         db_table = 'books'
 
 
-# Transations
-class Transation(models.Model):
+# Transactions
+class Transaction(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     reader = models.ForeignKey(Reader, on_delete=models.CASCADE)
-    transation_date = models.DateField()
-    transation_time = models.TimeField()
+    transaction_date = models.DateField()
+    transaction_time = models.TimeField()
