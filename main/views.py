@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from main.models import Book, Transaction
+from main.models import Book, Transaction, Reader
 
 
 # Create your views here.
@@ -26,5 +26,7 @@ def book_fines(request):
     return render(request, 'book_fines.html')
 
 
-def issue_book(request):
-    return render(request, 'issue_book.html')
+def issue_book(request, id):
+    book = Book.objects.get(pk=1)
+    readers = Reader.objects.all()
+    return render(request, 'issue_book.html', {'book': book, 'readers': readers})

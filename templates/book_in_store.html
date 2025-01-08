@@ -62,8 +62,7 @@
                             <td>{{ book.subject }}</td>
                             <td>{{ book.isbn }}</td>
                             <td>
-<!--                                {% url 'issue_book' book.id %}-->
-                                <a href="#" class="btn btn-primary ">Issue</a>
+                                <a href="{% url 'issue_book' book.id %}" class="btn btn-primary ">Issue</a>
                             </td>
                         </tr>
                     {% endfor %}

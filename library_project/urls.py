@@ -30,7 +30,7 @@ urlpatterns = [
 
     path('fines', views.book_fines, name='book_fines'),
 
-    path('issue', views.issue_book, name='issue_book'),
+    path('issue/<int:id>', views.issue_book, name='issue_book'),
 
     path('admin/', admin.site.urls),
 ]
