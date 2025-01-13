@@ -2,76 +2,76 @@
 {% load static %}
 
 {% block title %}
-<title>Borrowed Books</title>
+    <title>Borrowed Books</title>
 {% endblock %}
 
 {% block extra_css %}
-<!-- Custom styles for this page -->
-<link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet' %}">
+    <!-- Custom styles for this page -->
+    <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet' %}">
 {% endblock %}
 
 
 {% block extra_js %}
-<!-- Page level plugins -->
-<script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+    <!-- Page level plugins -->
+    <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
 
-<!-- Page level custom scripts -->
-<script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+    <!-- Page level custom scripts -->
+    <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-<!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Books</h1>
-<p class="mb-4">Borrowed Books</p>
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Books</h1>
+    <p class="mb-4">Borrowed Books</p>
 
-<!-- DataTales Example -->
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">All Borrowed Books</h6>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Reader</th>
-                    <th>Status</th>
-                    <th>Expected Return Date</th>
-                    <th>Borrowed Date</th>
-                    <th>Return</th>
-                </tr>
-                </thead>
-                <tfoot>
-                <tr>
-                    <th>Title</th>
-                    <th>Reader</th>
-                    <th>Status</th>
-                    <th>Expected Return Date</th>
-                    <th>Borrowed Date</th>
-                    <th>Return</th>
-                </tr>
-                </tfoot>
-                <tbody>
-                {% for book in borrowed_books %}
-                <tr>
-                    <td>{{ book.title }}</td>
-                    <td>{{ reader.name }}</td>
-                    <td>{{ book.status }}</td>
-                    <td>{{ book.expected_return_date | date:"d-m-Y" }}</td>
-                    <td>{{ book.isbn }}</td>
-                    <td>
-                        <!--                                {% url 'issue_book' book.id %}-->
-                        <a href="#" class="btn btn-outline-primary btn-sm ">Return</a>
-                    </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">All Borrowed Books</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Reader</th>
+                        <th>Status</th>
+                        <th>Borrowed Date</th>
+                        <th>Expected Return Date</th>
+                        <th>Return</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Title</th>
+                        <th>Reader</th>
+                        <th>Status</th>
+                        <th>Borrowed Date</th>
+                        <th>Expected Return Date</th>
+                        <th>Return</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    {% for book in borrowed_books %}
+                        <tr>
+                            <td>{{ book.book.title }}</td>
+                            <td>{{ book.reader.name }}</td>
+                            <td>{{ book.status }}</td>
+                            <td>{{ book.expected_return_date }}</td>
+                            <td>{{ book.created_at }}</td>
+                            <td>
+{#                                <!--                                {% url 'issue_book' book.id %}-->#}
+                                <a href="{% url 'return_book' book.id %}" class="btn btn-outline-primary btn-sm ">Return</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
 {% static '' %}

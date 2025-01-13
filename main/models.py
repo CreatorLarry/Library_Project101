@@ -1,3 +1,5 @@
+from datetime import datetime, date
+
 from django.db import models
 
 
@@ -19,6 +21,7 @@ class Reader(models.Model):
         ordering = ['reader_no']
         db_table = 'readers'
 
+
 # book models
 class Book(models.Model):
     title = models.CharField(max_length=100)
@@ -35,6 +38,7 @@ class Book(models.Model):
 
     def __str__(self):
         return f'{self.title} - {self.isbn}'
+
     class Meta:
         verbose_name = 'Book'
         verbose_name_plural = 'Books'
@@ -46,9 +50,17 @@ class Book(models.Model):
 class Transaction(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     reader = models.ForeignKey(Reader, on_delete=models.CASCADE, related_name='transactions')
-    status = models.BooleanField(default=False) # Borrowed returned or lost
+    status = models.CharField(
+        max_length=10,
+        choices=[
+            ('BORROWED', 'Borrowed'),
+            ('RETURNED', 'Returned'),
+        ],
+        default='BORROWED',
+    )
+    # Borrowed returned or lost
     expected_return_date = models.DateField()
-    return_date = models.TimeField(null=True)
+    return_date = models.DateField(null=True, blank=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -62,11 +74,19 @@ class Transaction(models.Model):
             return amount
         return 0
 
+    @property
+    def overdue_days(self):
+        if self.return_date and self.expected_return_date and self.return_date > self.expected_return_date:
+            days = (self.return_date - self.expected_return_date).days
+            return days
+        return 0
+
     class Meta:
         verbose_name = 'Transaction'
         verbose_name_plural = 'Transactions'
         ordering = ['-created_at']
         db_table = 'transactions'
+
 
 # Payments
 class Payment(models.Model):
@@ -75,7 +95,7 @@ class Payment(models.Model):
     checkout_request_id = models.CharField(max_length=100)
     code = models.CharField(max_length=30, null=True)
     amount = models.IntegerField()
-    status = models.CharField(max_length=100)
+    status = models.CharField(max_length=20, default='PENDING')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -84,8 +104,8 @@ class Payment(models.Model):
         verbose_name_plural = 'Payments'
         ordering = ['-created_at']
         db_table = 'payments'
+
     def __str__(self):
         return f'{self.merchant_request_id} - {self.code} - {self.amount}'
-
 
 # ALTER DATABASE `databasename` CHARACTER SET utf8;
