@@ -41,6 +41,7 @@
                         <th>Borrowed Date</th>
                         <th>Expected Return Date</th>
                         <th>Return</th>
+                        <th>Lost</th>
                     </tr>
                     </thead>
                     <tfoot>
@@ -51,6 +52,7 @@
                         <th>Borrowed Date</th>
                         <th>Expected Return Date</th>
                         <th>Return</th>
+                        <th>Lost</th>
                     </tr>
                     </tfoot>
                     <tbody>
@@ -64,6 +66,10 @@
                             <td>
 {#                                <!--                                {% url 'issue_book' book.id %}-->#}
                                 <a href="{% url 'return_book' book.id %}" class="btn btn-outline-primary btn-sm ">Return</a>
+                            </td>
+                            <td>
+{#                                <!--                                {% url 'issue_book' book.id %}-->#}
+                                <a href="{% url 'lost_book' book.id %}" class="btn btn-outline-danger btn-sm ">Lost</a>
                             </td>
                         </tr>
                     {% endfor %}

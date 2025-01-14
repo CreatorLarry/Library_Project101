@@ -20,7 +20,7 @@ class BookAdmin(admin.ModelAdmin):
 
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ['book', 'reader', 'status', 'expected_return_date']
-    search_fields = ['book', 'reader', 'status', 'expected_return_date']
+    search_fields = ['book__title', 'reader__name', 'status', 'expected_return_date']
     list_per_page = 25
 
 class PaymentAdmin(admin.ModelAdmin):
