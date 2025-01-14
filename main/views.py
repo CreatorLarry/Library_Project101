@@ -2,7 +2,9 @@ import json
 from datetime import timedelta, date
 
 from django.contrib import messages
-from django.http import HttpResponse
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django_daraja.mpesa.core import MpesaClient
@@ -118,3 +120,80 @@ def callback(request):
         transaction.status = 'COMPLETED'
         transaction.save()
     return HttpResponse("OK")
+
+
+def pie_chart(request):
+    transactions = Transaction.objects.filter(created_at__year=2024)
+    returned = transactions.filter(status='RETURNED').count()
+    lost = transactions.filter(status='LOST').count()
+    borrowed = transactions.filter(status='BORROWED').count()
+
+    return JsonResponse({
+        "title": "Transactions Grouped By Status",
+        "data": {
+            "labels": ["Returned", "Borrowed", "Lost"],
+            "datasets": [{
+                "data": [returned, lost, borrowed],
+                "backgroundColor": ['#4e73df', '#1cc88a', '#36b9cc'],
+                "hoverBackgroundColor": ['#2e59d9', '#17a673', '#2c9faf'],
+                "hoverBorderColor": "rgba(234, 236, 244, 1)",
+            }],
+        },
+    })
+
+
+def line_chart(request):
+    transactions = Transaction.objects.filter(created_at__year=2024)
+    grouped = transactions.annotate(month=TruncMonth('created_at')).values('month').annotate(count=Count('id')).order_by('month')
+    numbers = []
+    months = []
+
+    for i in grouped:
+        numbers.append(i['count'])
+        months.append(i['month'].strftime('%b'))
+    return JsonResponse({
+        "title": "Transactions Grouped By Month",
+        "data": {
+            "labels": months,
+            "datasets": [{
+                "label": "Count",
+                "lineTension": 0.3,
+                "backgroundColor": "rgba(78, 115, 223, 0.05)",
+                "borderColor": "rgba(78, 115, 223, 1)",
+                "pointRadius": 3,
+                "pointBackgroundColor": "rgba(78, 115, 223, 1)",
+                "pointBorderColor": "rgba(78, 115, 223, 1)",
+                "pointHoverRadius": 3,
+                "pointHoverBackgroundColor": "rgba(78, 115, 223, 1)",
+                "pointHoverBorderColor": "rgba(78, 115, 223, 1)",
+                "pointHitRadius": 10,
+                "pointBorderWidth": 2,
+                "data": numbers,
+            }],
+        }
+    })
+# ctrl + F5 - Hard refreshing of a page
+
+def bar_chart(request):
+    transactions = Transaction.objects.filter(created_at__year=2024)
+    grouped = transactions.annotate(month=TruncMonth('created_at')).values('month').annotate(
+        count=Count('id')).order_by('month')
+    numbers = []
+    months = []
+
+    for i in grouped:
+        numbers.append(i['count'])
+        months.append(i['month'].strftime('%b'))
+    return JsonResponse({
+        "title": "Transactions Grouped By Month",
+        "data": {
+            "labels": months,
+            "datasets": [{
+                "label": "Total",
+                "backgroundColor": "#4e73df",
+                "hoverBackgroundColor": "#2e59d9",
+                "borderColor": "#4e73df",
+                "data": numbers,
+            }],
+        },
+    })
